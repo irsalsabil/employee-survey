@@ -29,9 +29,6 @@ def extract_credentials(df_creds):
 # Extract credentials from df_creds
 credentials = extract_credentials(df_creds)
 
-# Verify credentials structure (for debugging, can be removed later)
-st.write("Credentials passed to authenticator:", credentials['credentials'])
-
 # Authentication Setup
 authenticator = stauth.Authenticate(
     credentials['credentials'],
@@ -42,10 +39,6 @@ authenticator = stauth.Authenticate(
 
 # Display the login form
 name, authentication_status, username = authenticator.login('main')
-
-st.write("Name:", name)
-st.write("Authentication Status:", authentication_status)
-st.write("Username:", username)
 
 # Handle authentication status
 if authentication_status:

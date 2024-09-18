@@ -14,10 +14,10 @@ print(hashed_passwords)
 import bcrypt
 
 # Simulated login password
-login_password = 'Xh3!zK'  # Replace with actual password
+login_password = 'x'  # Replace with actual password
 
 # Hashed password from df_creds
-hashed_password_from_db = "$2b$12$FdwCgFHBKkHIxcH4q6U/vumvWo1YZkd4NxztyJoz3aGah2D4fg0cm"  # Example
+hashed_password_from_db = "$2b$12$.."  # Example
 
 # Check if the entered password matches the stored hash
 if bcrypt.checkpw(login_password.encode('utf-8'), hashed_password_from_db.encode('utf-8')):
