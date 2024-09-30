@@ -45,11 +45,15 @@ def extract_credentials(df_creds):
             'name': row['name'],  # Add the 'name' field
             'password': row['password'],  # Password should already be hashed
             'unit': row['unit'],  # Store the user's unit for later filtering
+            'email': row['email'],      # Add the email field
+
         }
     return credentials
 
 # Extract credentials from df_creds
 credentials = extract_credentials(df_creds)
+
+st.write(credentials)
 
 # Authentication Setup
 authenticator = stauth.Authenticate(
