@@ -43,7 +43,9 @@ def extract_credentials(df_creds):
             'name': row['name'],  # Add the 'name' field
             'password': row['password'],  # Password should already be hashed
             'email': row['email'],  # Password should already be hashed
-            'unit': row['unit']  # Store the user's unit for later filtering
+            'unit': row['unit'],  # Store the user's unit for later filtering
+            'failed_login_attempts': 0,
+            'logged_in': False
         }
     return credentials
 
