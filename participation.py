@@ -26,6 +26,8 @@ def fetch_data_creds():
 
 df_creds = fetch_data_creds()
 
+st.write(df_creds.columns)
+
 # Process `df_creds` to extract credentials in the required format
 def extract_credentials(df_creds):
     credentials = {
