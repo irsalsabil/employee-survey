@@ -1,8 +1,11 @@
-streamlit
+requests
+hashlib
+hmac
 pandas
+datetime
+streamlit
 gspread
 oauth2client
 toml
-streamlit-authenticator
-scipy
 altair
+streamlit_authenticator
