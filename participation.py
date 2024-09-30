@@ -26,8 +26,6 @@ def fetch_data_creds():
 
 df_creds = fetch_data_creds()
 
-st.write(df_creds.columns)
-
 # Process `df_creds` to extract credentials in the required format
 def extract_credentials(df_creds):
     credentials = {
@@ -53,8 +51,6 @@ def extract_credentials(df_creds):
 # Extract credentials from df_creds
 credentials = extract_credentials(df_creds)
 
-st.write(credentials)
-
 # Authentication Setup
 authenticator = stauth.Authenticate(
     credentials['credentials'],
@@ -66,9 +62,7 @@ authenticator = stauth.Authenticate(
 # Display the login form
 #name, authentication_status, username = authenticator.login()
 #name, authentication_status, username = authenticator.login('main', fields = {'Form name': 'Welcome to Employee Survey Participation Dashboard'})
-
-result = authenticator.login('main', fields = {'Form name': 'Welcome to Employee Survey Participation Dashboard'})
-st.write(result)
+authenticator.login('main', fields = {'Form name': 'Welcome to Employee Survey Participation Dashboard'})
 
 # Handle authentication status
 if st.session_state['authentication_status']:
