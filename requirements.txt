@@ -5,3 +5,4 @@ oauth2client
 toml
 streamlit-authenticator
 scipy
+altair

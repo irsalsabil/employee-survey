@@ -13,7 +13,6 @@ import streamlit_authenticator as stauth
 # AUTHENTICATION SECTION
 
 #Fetch credential
-@st.cache_resource(ttl=86400)
 def fetch_data_creds():
     secret_info = st.secrets["sheets"]
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
@@ -43,6 +42,7 @@ def extract_credentials(df_creds):
         credentials['credentials']['usernames'][row['username']] = {
             'name': row['name'],  # Add the 'name' field
             'password': row['password'],  # Password should already be hashed
+            'email': row['email'],  # Password should already be hashed
             'unit': row['unit']  # Store the user's unit for later filtering
         }
     return credentials
