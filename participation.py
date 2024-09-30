@@ -59,7 +59,7 @@ authenticator = stauth.Authenticate(
 )
 
 # Display the login form
-name, authentication_status, username = authenticator.login('main')
+name, authentication_status, username = authenticator.login()
 
 # Handle authentication status
 if authentication_status:
