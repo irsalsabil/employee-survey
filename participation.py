@@ -167,11 +167,11 @@ if st.session_state['authentication_status']:
     #survey_answer_data = fetch_survey_answer_data(start_date, end_date)
 
     # Display the result in Streamlit
-    if not survey_respondent_data.empty:
-        st.write("Survey Respondent Data fetched successfully:")
-        st.dataframe(survey_respondent_data)
-    else:
-        st.write("No Survey Respondent Data available for the specified range.")
+    #if not survey_respondent_data.empty:
+    #    st.write("Survey Respondent Data fetched successfully:")
+    #    st.dataframe(survey_respondent_data)
+    #else:
+    #    st.write("No Survey Respondent Data available for the specified range.")
 
     #if not survey_answer_data.empty:
     #    st.write("Survey Answer Data fetched successfully:")
@@ -198,8 +198,8 @@ if st.session_state['authentication_status']:
     df_sap = fetch_data_sap()
 
     # Display data from sap
-    st.write('Df_sap')
-    st.dataframe(df_sap)
+    #st.write('Df_sap')
+    #st.dataframe(df_sap)
 
     # JOIN SURVER RESPONDENT AND SHEET SAP SECTION
 
@@ -211,8 +211,8 @@ if st.session_state['authentication_status']:
     df_merged = pd.merge(survey_respondent_data, df_sap, left_on='nik', right_on='nik_short', how='outer', indicator=True)
 
     # Display df_merged
-    st.write('Df_merged')
-    st.dataframe(df_merged)
+    #st.write('Df_merged')
+    #st.dataframe(df_merged)
 
     # CONCISE DATAFRAME SECTION
 
@@ -230,8 +230,8 @@ if st.session_state['authentication_status']:
     df_concise['unit'] = df_concise['unit'].replace({'GROUP OF ': 'G. ', 'CORPORATE': 'C.'}, regex=True)
 
     # Display the resulting DataFrame
-    st.write('Df_concise')
-    st.dataframe(df_concise)
+    #st.write('Df_concise')
+    #st.dataframe(df_concise)
 
     # FILTER SECTION
 
