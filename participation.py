@@ -42,10 +42,7 @@ def extract_credentials(df_creds):
         credentials['credentials']['usernames'][row['username']] = {
             'name': row['name'],  # Add the 'name' field
             'password': row['password'],  # Password should already be hashed
-            'email': row['email'],  # Password should already be hashed
             'unit': row['unit'],  # Store the user's unit for later filtering
-            'failed_login_attempts': 0,
-            'logged_in': False
         }
     return credentials
 
@@ -64,7 +61,7 @@ authenticator = stauth.Authenticate(
 name, authentication_status, username = authenticator.login()
 
 # Handle authentication status
-if authentication_status:
+if st.session_state['authentication_status']:
 
 
     # FETCHING DATA FROM API SECTION 
@@ -349,8 +346,8 @@ if authentication_status:
     st.sidebar.markdown('### Options')
     authenticator.logout('Logout', 'sidebar')
 
-elif authentication_status == False:
-    st.error("Username/password is incorrect")
-
-elif authentication_status == None:
-    st.warning("Please enter your username and password")
+elif st.session_state['authentication_status'] is False:
+    st.error('Username/password is incorrect')
+    
+elif st.session_state['authentication_status'] is None:
+    st.warning('Please enter your username and password')
