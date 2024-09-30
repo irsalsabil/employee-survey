@@ -289,8 +289,8 @@ if st.session_state['authentication_status']:
     final_counts['Not Done (%)'] = final_counts['Not Done'] / (final_counts['Done'] + final_counts['Not Done']) * 100
 
     # final_counts
-    st.write('final_counts')
-    st.write(final_counts)
+    #st.write('final_counts')
+    #st.write(final_counts)
 
     # Calculate overall status survey
     total_done = final_counts['Done'].sum()
