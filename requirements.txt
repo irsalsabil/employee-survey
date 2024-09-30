@@ -1,11 +1,9 @@
 requests
-hashlib
-hmac
 pandas
-datetime
 streamlit
 gspread
 oauth2client
 toml
 altair
 streamlit_authenticator
+python
