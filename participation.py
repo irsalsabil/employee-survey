@@ -66,8 +66,6 @@ authenticator = stauth.Authenticate(
 )
 
 # Display the login form
-#name, authentication_status, username = authenticator.login()
-#name, authentication_status, username = authenticator.login('main', fields = {'Form name': 'Welcome to Employee Survey Participation Dashboard'})
 authenticator.login('main', fields = {'Form name': 'Welcome to Employee Survey Participation Dashboard'})
 
 # Handle authentication status
@@ -207,7 +205,10 @@ if st.session_state['authentication_status']:
 
     # Define the start and end date range
     start_date = datetime.strptime("2024-10-01 00:00", "%Y-%m-%d %H:%M")
-    end_date = datetime.strptime("2024-10-05 00:00", "%Y-%m-%d %H:%M")
+
+    # End date dynamically set to the current date and time, with the same format as start_date
+    end_date = datetime.now().strftime("%Y-%m-%d %H:%M")
+    end_date = datetime.strptime(end_date, "%Y-%m-%d %H:%M")
 
     # Fetch the Survey Respondent Data (24-hour interval)
     survey_respondent_data = fetch_survey_respondent_data(start_date, end_date)
@@ -277,15 +278,23 @@ if st.session_state['authentication_status']:
         'status_survey': df_merged['_merge'].apply(lambda x: 'done' if x in ['left_only', 'both'] else 'not done'),
         'admin_goman': df_merged.apply(lambda row: row['admin_goman'] if pd.notna(row['admin_goman']) else '-', axis=1)
     })
-    for index, row in df_merged.iterrows():
-        # Always fill unit from unit_long if it exists
-        df_concise.at[index, 'unit'] = row['unit_long'] if pd.notna(row['unit_long']) and row['unit_long'] != '' else row['unit_name']
+
     # Replace 'Group of' with 'G.' and 'Corporate' with 'C.' in the 'unit' column
-    #df_concise['unit'] = df_concise['unit'].replace({'GROUP OF ': 'G. ', 'CORPORATE': 'C.'}, regex=True)
     df_concise['unit'] = df_concise['unit'].str.upper().replace({
         r'\s*GROUP OF\s*': 'G. ',
         r'\s*CORPORATE\s*': 'C. '
     }, regex=True).str.strip()
+
+    df_concise['subunit'] = df_concise['subunit'].str.upper().replace({
+        r'\s*GROUP OF\s*': 'G. ',
+        r'\s*CORPORATE\s*': 'C. '
+    }, regex=True).str.strip()
+
+    # Convert the values to uppercase and remove spaces before and after
+    df_concise['division'] = df_concise['division'].str.upper().str.strip()
+    df_concise['department'] = df_concise['department'].str.upper().str.strip()
+
+
 
     # Display the resulting DataFrame
     #with st.expander('Survey Respondent & SAP Sheet Concised'):
