@@ -216,12 +216,12 @@ if st.session_state['authentication_status']:
     #survey_answer_data = fetch_survey_answer_data(start_date, end_date)
 
     # Display the result in Streamlit
-    #with st.expander("Survey Respondent Data from API"):
-        #if not survey_respondent_data.empty:
-            #st.write("Survey Respondent Data from API:")
-            #st.dataframe(survey_respondent_data)
-        #else:
-            #st.write("No Survey Respondent Data available for the specified range.")
+    with st.expander("Survey Respondent Data from API"):
+        if not survey_respondent_data.empty:
+            st.write("Survey Respondent Data from API:")
+            st.dataframe(survey_respondent_data)
+        else:
+            st.write("No Survey Respondent Data available for the specified range.")
 
     #if not survey_answer_data.empty:
     #    st.write("Survey Answer Data fetched successfully:")
