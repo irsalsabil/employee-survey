@@ -10,6 +10,11 @@ import toml
 import altair as alt
 import streamlit_authenticator as stauth
 
+st.set_page_config(
+    page_title='Employeee Survey Kognisi',
+    page_icon=':blue_heart:', 
+)
+
 # AUTHENTICATION SECTION
 
 #Fetch credential
