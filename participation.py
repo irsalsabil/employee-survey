@@ -98,6 +98,23 @@ if st.session_state['authentication_status']:
     # Get the user's email from Streamlit's experimental_user function
     log_user_access(user_email)
     st.write(f"Welcome, {user_name} ({user_email})!")
+    st.markdown("""
+    <style>
+    .header {
+        background-color: #1DA1F2;  /* Twitter's blue */
+        color: white;                /* White text */
+        padding: 10px;               /* Padding for aesthetics */
+        text-align: center;          /* Centered text */
+        font-size: 24px;             /* Larger font size */
+    }
+    </style>
+    <div class="header">
+        <h1>🗨️Employee Survey Respondent</h1>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.write('Hello! This a page for employee survey. For futher information please contact us at irsa@growthcenter.id or dahayu@growthcenter.id, thanks!')
+    st.divider()
 
     # FETCHING DATA FROM API SECTION 
 
