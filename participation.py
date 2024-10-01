@@ -221,21 +221,22 @@ if st.session_state['authentication_status']:
     # Create the new concise DataFrame
     df_concise = pd.DataFrame({
         'nik': df_merged['nik_short'].combine_first(df_merged['nik_x']),
-        'unit': df_merged.apply(lambda row: row['subunit'] if row['unit_long'] == 'GROUP OF MEDIA' else row['unit_long'] if pd.notna(row['unit_long']) else row['unit_name'], axis=1),
+        'unit': None,  # Initialize with None to fill later
+        'subunit' : df_merged['subunit'],
         'division': df_merged['division'].combine_first(df_merged['div_name']),
         'department': df_merged['department'].combine_first(df_merged['dept_name']),
         'status_survey': df_merged['_merge'].apply(lambda x: 'done' if x in ['left_only', 'both'] else 'not done'),
         'admin_goman': df_merged.apply(lambda row: row['admin_goman'] if pd.notna(row['admin_goman']) else '-', axis=1)
     })
-
+    for index, row in df_merged.iterrows():
+        # Always fill unit from unit_long if it exists
+        df_concise.at[index, 'unit'] = row['unit_long'] if pd.notna(row['unit_long']) and row['unit_long'] != '' else row['unit_name']
     # Replace 'Group of' with 'G.' and 'Corporate' with 'C.' in the 'unit' column
     #df_concise['unit'] = df_concise['unit'].replace({'GROUP OF ': 'G. ', 'CORPORATE': 'C.'}, regex=True)
     df_concise['unit'] = df_concise['unit'].str.upper().replace({
         r'\s*GROUP OF\s*': 'G. ',
         r'\s*CORPORATE\s*': 'C. '
     }, regex=True).str.strip()
-
-
 
     # Display the resulting DataFrame
     with st.expander('Survey Respondent & SAP Sheet Concised'):
