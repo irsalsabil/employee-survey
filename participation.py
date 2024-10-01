@@ -111,7 +111,7 @@ if st.session_state['authentication_status']:
     </div>
     """, unsafe_allow_html=True)
     
-    st.write('Hello! This a page for employee survey. For futher information please contact us at irsa@growthcenter.id or dahayu@growthcenter.id, thanks!')
+    #st.write('Hello! This a page for employee survey. For futher information please contact us at irsa@growthcenter.id or dahayu@growthcenter.id, thanks!')
     st.divider()
 
     # FETCHING DATA FROM API SECTION 
