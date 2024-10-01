@@ -15,6 +15,25 @@ st.set_page_config(
     page_icon=':blue_heart:', 
 )
 
+#ACCESS LOG
+def log_user_access(email):
+    access_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    
+    # Setup the Google Sheets client
+    scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(st.secrets["sheets"], scope)
+    client = gspread.authorize(creds)
+    
+    try:
+        spreadsheet_id = "1Y6DN0bQd55Fbqygkb5hSNxJtC_l4U1QT2sBL-MR-K-4"  # Replace with your actual spreadsheet ID
+        sheet = client.open_by_key(spreadsheet_id).sheet1  # Use open_by_key instead of open
+        sheet.append_row([email, access_time])
+    except gspread.SpreadsheetNotFound:
+        st.write("Spreadsheet not found. Please check the ID and permissions.")
+    except Exception as e:
+        st.write(f"An error occurred: {e}")
+
+
 # AUTHENTICATION SECTION
 
 #Fetch credential
