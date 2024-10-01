@@ -131,6 +131,7 @@ if st.session_state['authentication_status']:
 
         if all_data:
             combined_data = pd.concat(all_data, ignore_index=True)
+            combined_data = combined_data[combined_data['name'] != 'Testing aja']
             return combined_data
         else:
             return pd.DataFrame()
