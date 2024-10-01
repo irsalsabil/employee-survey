@@ -71,7 +71,7 @@ authenticator = stauth.Authenticate(
 authenticator.login('main', fields = {'Form name': 'Welcome to Employee Survey Participation Dashboard'})
 
 # Handle authentication status
-if authentication_status:
+if st.session_state['authentication_status']:
     username = st.session_state['username']
 
     # Retrieve the user's email and name from the credentials
@@ -412,8 +412,8 @@ if authentication_status:
     st.sidebar.markdown('### Options')
     authenticator.logout('Logout', 'sidebar')
 
-elif authentication_status is False:
+elif st.session_state['authentication_status'] is False:
     st.error('Username/password is incorrect')
     
-elif authentication_status is None:
+elif st.session_state['authentication_status'] is None:
     st.warning('Please enter your username and password')
