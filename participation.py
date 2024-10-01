@@ -99,7 +99,6 @@ if st.session_state['authentication_status']:
     log_user_access(user_email)
     st.write(f"Welcome, {user_name} ({user_email})!")
 
-
     # FETCHING DATA FROM API SECTION 
 
     # Load secrets from secrets.toml
