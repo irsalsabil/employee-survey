@@ -10,6 +10,26 @@ import toml
 import altair as alt
 import streamlit_authenticator as stauth
 
+#WELCOME
+st.write(f'Welcome *{st.session_state["name"]}*')
+st.markdown("""
+<style>
+.header {
+    background-color: #1DA1F2;  /* Twitter's blue */
+    color: white;                /* White text */
+    padding: 10px;               /* Padding for aesthetics */
+    text-align: center;          /* Centered text */
+    font-size: 24px;             /* Larger font size */
+}
+</style>
+<div class="header">
+    <h1>🗨️Employee Survey Respondent</h1>
+</div>
+""", unsafe_allow_html=True)
+    
+st.write('Hello! This a page for employee survey. For futher information please contact us at irsa@growthcenter.id or dahayu@growthcenter.id, thanks!')
+st.divider()
+
 # AUTHENTICATION SECTION
 
 #Fetch credential
@@ -244,7 +264,6 @@ if st.session_state['authentication_status']:
 
     # Sidebar: Add a selectbox for unit filter
     st.sidebar.markdown('### Unit Filter')
-    st.write('dayu sedang mengetik....')
 
     # Multiselect widget to select multiple units
     unit_list = list(df_concise['unit'].unique())  # Remove 'All' for multiselect
