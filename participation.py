@@ -32,6 +32,16 @@ def log_user_access(email):
         st.write("Spreadsheet not found. Please check the ID and permissions.")
     except Exception as e:
         st.write(f"An error occurred: {e}")
+# Get the user's email from Streamlit's experimental_user function
+user_info = st.experimental_user
+# Check if user_info contains the email and log access
+if user_info is not None and "email" in user_info:
+    user_email = user_info['email']
+    log_user_access(user_email)
+    st.write(f"Welcome, {user_email}!")
+else:
+    st.write("No email detected. Are you sure you are signed in?")
+    st.write("Debug info:", user_info)
 
 
 # AUTHENTICATION SECTION
