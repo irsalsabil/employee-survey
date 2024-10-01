@@ -248,8 +248,8 @@ if st.session_state['authentication_status']:
     df_sap = fetch_data_sap()
 
     # Display data from sap
-    with st.expander('Employee Data from SAP Sheet'):
-        st.dataframe(df_sap)
+    #with st.expander('Employee Data from SAP Sheet'):
+        #st.dataframe(df_sap)
 
     # JOIN SURVER RESPONDENT AND SHEET SAP SECTION
 
@@ -261,8 +261,8 @@ if st.session_state['authentication_status']:
     df_merged = pd.merge(survey_respondent_data, df_sap, left_on='nik', right_on='nik_short', how='outer', indicator=True)
 
     # Display df_merged
-    with st.expander('Survey Respondent & SAP Sheet Merged'):
-        st.dataframe(df_merged)
+    #with st.expander('Survey Respondent & SAP Sheet Merged'):
+        #st.dataframe(df_merged)
 
     # CONCISE DATAFRAME SECTION
 
@@ -288,8 +288,8 @@ if st.session_state['authentication_status']:
     }, regex=True).str.strip()
 
     # Display the resulting DataFrame
-    with st.expander('Survey Respondent & SAP Sheet Concised'):
-        st.dataframe(df_concise)
+    #with st.expander('Survey Respondent & SAP Sheet Concised'):
+        #st.dataframe(df_concise)
 
     # FILTER SECTION
 
@@ -347,8 +347,8 @@ if st.session_state['authentication_status']:
     final_counts['Not Done (%)'] = final_counts['Not Done'] / (final_counts['Done'] + final_counts['Not Done']) * 100
 
     # final_counts
-    with st.expander('Final Counts'):
-        st.write(final_counts)
+    #with st.expander('Final Counts'):
+        #st.write(final_counts)
 
     # Calculate overall status survey
     total_done = final_counts['Done'].sum()
@@ -403,6 +403,10 @@ if st.session_state['authentication_status']:
 
     # Display the chart using Streamlit
     st.altair_chart(participation_chart, use_container_width=True)
+
+    # final_counts
+    with st.expander('Final Counts'):
+        st.write(final_counts)
 
      # Logout button
     st.sidebar.markdown('### Options')
