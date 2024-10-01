@@ -11,7 +11,7 @@ import altair as alt
 import streamlit_authenticator as stauth
 
 st.set_page_config(
-    page_title='Employeee Survey Kognisi',
+    page_title='Employeee Survey Participation',
     page_icon=':blue_heart:', 
 )
 
