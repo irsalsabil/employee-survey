@@ -145,7 +145,7 @@ if st.session_state['authentication_status']:
             return None
 
     # Function to handle fetching Survey Respondent Data (24-hour intervals)
-    @st.cache_resource(ttl=86400)
+    @st.cache_resource(ttl=7200)
     def fetch_survey_respondent_data(start_date, end_date):
         all_data = []
         current_date = start_date
@@ -215,7 +215,7 @@ if st.session_state['authentication_status']:
     # CONNECT SHEET SAP SECTION
 
     # Fetch data
-    @st.cache_resource(ttl=86400)
+    @st.cache_resource()
     def fetch_data_sap():
         secret_info = st.secrets["sheets"]
         scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
