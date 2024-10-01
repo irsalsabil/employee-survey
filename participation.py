@@ -405,7 +405,7 @@ if st.session_state['authentication_status']:
     st.altair_chart(participation_chart, use_container_width=True)
 
     # final_counts
-    with st.expander('Final Counts'):
+    with st.expander('Data Source'):
         st.write(final_counts)
 
      # Logout button
