@@ -54,6 +54,7 @@ def extract_credentials(df_creds):
     return credentials
 
 # Extract credentials from df_creds
+df_creds = fetch_data_creds()
 credentials = extract_credentials(df_creds)
 
 # Authentication Setup
@@ -71,6 +72,11 @@ authenticator.login('main', fields = {'Form name': 'Welcome to Employee Survey P
 
 # Handle authentication status
 if st.session_state['authentication_status']:
+    username = st.session_state['username']
+
+    # Retrieve the user's email and name from the credentials
+    user_email = credentials['credentials']['usernames'][username]['email']
+    user_name = credentials['credentials']['usernames'][username]['name']
 
         #ACCESS LOG
     def log_user_access(email):
@@ -90,16 +96,8 @@ if st.session_state['authentication_status']:
         except Exception as e:
             st.write(f"An error occurred: {e}")
     # Get the user's email from Streamlit's experimental_user function
-    user_info = st.experimental_user
-    st.write("User Info:", user_info)
-    # Check if user_info contains the email and log access
-    if user_info is not None and "email" in user_info:
-        user_email = user_info['email']
-        log_user_access(user_email)
-        st.write(f"Welcome, {user_email}!")
-    else:
-        st.write("No email detected. Are you sure you are signed in?")
-        st.write("Debug info:", user_info)
+    log_user_access(user_email)
+    st.write(f"Welcome, {user_name} ({user_email})!")
 
 
     # FETCHING DATA FROM API SECTION 
