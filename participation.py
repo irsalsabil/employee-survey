@@ -15,35 +15,6 @@ st.set_page_config(
     page_icon=':blue_heart:', 
 )
 
-#ACCESS LOG
-def log_user_access(email):
-    access_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    
-    # Setup the Google Sheets client
-    scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-    creds = ServiceAccountCredentials.from_json_keyfile_dict(st.secrets["sheets"], scope)
-    client = gspread.authorize(creds)
-    
-    try:
-        spreadsheet_id = "1Y6DN0bQd55Fbqygkb5hSNxJtC_l4U1QT2sBL-MR-K-4"  # Replace with your actual spreadsheet ID
-        sheet = client.open_by_key(spreadsheet_id).sheet1  # Use open_by_key instead of open
-        sheet.append_row([email, access_time])
-    except gspread.SpreadsheetNotFound:
-        st.write("Spreadsheet not found. Please check the ID and permissions.")
-    except Exception as e:
-        st.write(f"An error occurred: {e}")
-# Get the user's email from Streamlit's experimental_user function
-user_info = st.experimental_user
-# Check if user_info contains the email and log access
-if user_info is not None and "email" in user_info:
-    user_email = user_info['email']
-    log_user_access(user_email)
-    st.write(f"Welcome, {user_email}!")
-else:
-    st.write("No email detected. Are you sure you are signed in?")
-    st.write("Debug info:", user_info)
-
-
 # AUTHENTICATION SECTION
 
 #Fetch credential
@@ -100,6 +71,34 @@ authenticator.login('main', fields = {'Form name': 'Welcome to Employee Survey P
 
 # Handle authentication status
 if st.session_state['authentication_status']:
+
+        #ACCESS LOG
+    def log_user_access(email):
+        access_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        
+        # Setup the Google Sheets client
+        scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+        creds = ServiceAccountCredentials.from_json_keyfile_dict(st.secrets["sheets"], scope)
+        client = gspread.authorize(creds)
+        
+        try:
+            spreadsheet_id = "1Y6DN0bQd55Fbqygkb5hSNxJtC_l4U1QT2sBL-MR-K-4"  # Replace with your actual spreadsheet ID
+            sheet = client.open_by_key(spreadsheet_id).sheet1  # Use open_by_key instead of open
+            sheet.append_row([email, access_time])
+        except gspread.SpreadsheetNotFound:
+            st.write("Spreadsheet not found. Please check the ID and permissions.")
+        except Exception as e:
+            st.write(f"An error occurred: {e}")
+    # Get the user's email from Streamlit's experimental_user function
+    user_info = st.experimental_user
+    # Check if user_info contains the email and log access
+    if user_info is not None and "email" in user_info:
+        user_email = user_info['email']
+        log_user_access(user_email)
+        st.write(f"Welcome, {user_email}!")
+    else:
+        st.write("No email detected. Are you sure you are signed in?")
+        st.write("Debug info:", user_info)
 
 
     # FETCHING DATA FROM API SECTION 
