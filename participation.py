@@ -91,7 +91,6 @@ if st.session_state['authentication_status']:
             st.write(f"An error occurred: {e}")
     # Get the user's email from Streamlit's experimental_user function
     user_info = st.experimental_user
-    print(user_info)
     # Check if user_info contains the email and log access
     if user_info is not None and "email" in user_info:
         user_email = user_info['email']
