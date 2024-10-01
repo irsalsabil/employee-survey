@@ -313,6 +313,15 @@ if st.session_state['authentication_status']:
         if selected_admin_goman:
             df_concise = df_concise[df_concise['admin_goman'].isin(selected_admin_goman)]
 
+    # If 'G. MEDIA' is in the selected units, show additional filter for 'Admin GOMAN'
+    if 'G. MEDIA' in selected_unit:
+        subunit_list = ['All'] + list(df_concise['subunuit'].unique())
+        selected_subunit = st.sidebar.multiselect('Select Subunit GOMED:', subunit_list)
+
+        # Filter the DataFrame based on the selected 'Subunit GOMED'
+        if selected_subunit:
+            df_concise = df_concise[df_concise['subunit'].isin(selected_subunit)]
+
     division_list = list(df_concise['division'].unique())
     selected_division = st.sidebar.multiselect('Select Division:', division_list, default=[])
 
@@ -327,7 +336,7 @@ if st.session_state['authentication_status']:
 
     # Sidebar: Add a selectbox for breakdown variable
     st.sidebar.markdown ('### Breakdown Variable')
-    breakdown_variable = st.sidebar.selectbox('Select Breakdown Variable:', ['unit', 'division', 'department'])
+    breakdown_variable = st.sidebar.selectbox('Select Breakdown Variable:', ['unit', 'subunit', 'division', 'department'])
 
     # BAR CHART SECTION 
 
