@@ -157,8 +157,8 @@ if st.session_state['authentication_status']:
     #        return pd.DataFrame()
 
     # Define the start and end date range
-    start_date = datetime.strptime("2014-07-07 00:00", "%Y-%m-%d %H:%M")
-    end_date = datetime.strptime("2014-07-09 00:00", "%Y-%m-%d %H:%M")
+    start_date = datetime.strptime("2024-10-01 00:00", "%Y-%m-%d %H:%M")
+    end_date = datetime.strptime("2024-10-05 00:00", "%Y-%m-%d %H:%M")
 
     # Fetch the Survey Respondent Data (24-hour interval)
     survey_respondent_data = fetch_survey_respondent_data(start_date, end_date)
@@ -167,11 +167,12 @@ if st.session_state['authentication_status']:
     #survey_answer_data = fetch_survey_answer_data(start_date, end_date)
 
     # Display the result in Streamlit
-    #if not survey_respondent_data.empty:
-    #    st.write("Survey Respondent Data fetched successfully:")
-    #    st.dataframe(survey_respondent_data)
-    #else:
-    #    st.write("No Survey Respondent Data available for the specified range.")
+    with st.expander("Survey Respondent Data from API"):
+        if not survey_respondent_data.empty:
+            #st.write("Survey Respondent Data from API:")
+            st.dataframe(survey_respondent_data)
+        else:
+            st.write("No Survey Respondent Data available for the specified range.")
 
     #if not survey_answer_data.empty:
     #    st.write("Survey Answer Data fetched successfully:")
@@ -198,8 +199,8 @@ if st.session_state['authentication_status']:
     df_sap = fetch_data_sap()
 
     # Display data from sap
-    #st.write('Df_sap')
-    #st.dataframe(df_sap)
+    with st.expander('Employee Data from SAP Sheet'):
+        st.dataframe(df_sap)
 
     # JOIN SURVER RESPONDENT AND SHEET SAP SECTION
 
@@ -211,8 +212,8 @@ if st.session_state['authentication_status']:
     df_merged = pd.merge(survey_respondent_data, df_sap, left_on='nik', right_on='nik_short', how='outer', indicator=True)
 
     # Display df_merged
-    #st.write('Df_merged')
-    #st.dataframe(df_merged)
+    with st.expander('Survey Respondent & SAP Sheet Merged'):
+        st.dataframe(df_merged)
 
     # CONCISE DATAFRAME SECTION
 
@@ -227,11 +228,17 @@ if st.session_state['authentication_status']:
     })
 
     # Replace 'Group of' with 'G.' and 'Corporate' with 'C.' in the 'unit' column
-    df_concise['unit'] = df_concise['unit'].replace({'GROUP OF ': 'G. ', 'CORPORATE': 'C.'}, regex=True)
+    #df_concise['unit'] = df_concise['unit'].replace({'GROUP OF ': 'G. ', 'CORPORATE': 'C.'}, regex=True)
+    df_concise['unit'] = df_concise['unit'].str.upper().replace({
+        r'\s*GROUP OF\s*': 'G. ',
+        r'\s*CORPORATE\s*': 'C. '
+    }, regex=True).str.strip()
+
+
 
     # Display the resulting DataFrame
-    #st.write('Df_concise')
-    #st.dataframe(df_concise)
+    with st.expander('Survey Respondent & SAP Sheet Concised'):
+        st.dataframe(df_concise)
 
     # FILTER SECTION
 
@@ -289,8 +296,8 @@ if st.session_state['authentication_status']:
     final_counts['Not Done (%)'] = final_counts['Not Done'] / (final_counts['Done'] + final_counts['Not Done']) * 100
 
     # final_counts
-    #st.write('final_counts')
-    #st.write(final_counts)
+    with st.expander('Final Counts'):
+        st.write(final_counts)
 
     # Calculate overall status survey
     total_done = final_counts['Done'].sum()
