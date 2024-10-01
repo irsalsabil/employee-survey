@@ -244,6 +244,7 @@ if st.session_state['authentication_status']:
 
     # Sidebar: Add a selectbox for unit filter
     st.sidebar.markdown('### Unit Filter')
+    st.write('dayu sedang mengetik....')
 
     # Multiselect widget to select multiple units
     unit_list = list(df_concise['unit'].unique())  # Remove 'All' for multiselect
