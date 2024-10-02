@@ -358,6 +358,10 @@ if st.session_state['authentication_status']:
     if 'not done' not in final_counts:
         final_counts['not done'] = 0
 
+    # Ensure the correct order of columns before renaming
+    final_counts = final_counts[[breakdown_variable, 'done', 'not done']]
+
+    # Rename columns to 'Done' and 'Not Done'
     final_counts.columns = [breakdown_variable, 'Done', 'Not Done']
 
     # Calculate Done (%) and Not Done (%)
