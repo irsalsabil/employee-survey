@@ -18,6 +18,7 @@ st.set_page_config(
 # AUTHENTICATION SECTION
 
 #Fetch credential
+@st.cache_data(ttl=86400)  # Cache for 1 day
 def fetch_data_creds():
     secret_info = st.secrets["sheets"]
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
@@ -32,6 +33,7 @@ def fetch_data_creds():
 df_creds = fetch_data_creds()
 
 # Process `df_creds` to extract credentials in the required format
+
 def extract_credentials(df_creds):
     credentials = {
         "credentials": {
@@ -110,9 +112,6 @@ if st.session_state['authentication_status']:
         <h1>🗨️Employee Survey Respondent</h1>
     </div>
     """, unsafe_allow_html=True)
-    
-    #st.write('Hello! This a page for employee survey. For futher information please contact us at irsa@growthcenter.id or dahayu@growthcenter.id, thanks!')
-    #st.divider()
 
     # FETCHING DATA FROM API SECTION 
 
@@ -135,6 +134,7 @@ if st.session_state['authentication_status']:
         return code
 
     # Function to fetch data from the API
+    @st.cache_data(ttl=7200)
     def fetch_data(start_date, end_date, api_url):
         # Generate code for the date range
         code = generate_code(start_date, end_date, secret_key)
@@ -164,10 +164,21 @@ if st.session_state['authentication_status']:
     def fetch_survey_respondent_data(start_date, end_date):
         all_data = []
         current_date = start_date
+        total_days = (end_date - start_date).days
+
+        # Initialize progress bar and status text
+        progress_bar = st.progress(0)
+        status_text = st.empty()
 
         while current_date < end_date:
             next_date = (current_date + timedelta(days=1)).replace(hour=0, minute=0)
-            print(f"Fetching Survey Respondent Data for range: {current_date} to {next_date}")
+            
+            # Update progress and status text
+            progress = min(((current_date - start_date).days + 1) / total_days, 1.0)
+            progress_bar.progress(progress)
+            status_text.write(f"Fetching data for {current_date.strftime('%Y-%m-%d')} to {next_date.strftime('%Y-%m-%d')}")
+
+            # Fetch data for the current date range
             daily_data = fetch_data(current_date, next_date, surresp_url)
 
             if daily_data is not None:
@@ -175,33 +186,17 @@ if st.session_state['authentication_status']:
 
             current_date = next_date
 
+        # Clear the status once fetching is done
+        progress_bar.empty()
+        status_text.empty()
+
         if all_data:
             combined_data = pd.concat(all_data, ignore_index=True)
             combined_data = combined_data[combined_data['name'] != 'Testing aja']
             return combined_data
         else:
+            st.info("No data available for the specified date range.")
             return pd.DataFrame()
-
-    # Function to handle fetching Survey Answer Data (12-hour intervals)
-    #def fetch_survey_answer_data(start_date, end_date):
-    #    all_data = []
-    #    current_date = start_date
-
-    #    while current_date < end_date:
-    #        next_date = current_date + timedelta(hours=12)
-    #        print(f"Fetching Survey Answer Data for range: {current_date} to {next_date}")
-    #        daily_data = fetch_data(current_date, next_date, suransw_url)
-
-    #        if daily_data is not None:
-    #            all_data.append(daily_data)
-
-    #        current_date = next_date
-
-    #    if all_data:
-    #        combined_data = pd.concat(all_data, ignore_index=True)
-    #        return combined_data
-    #    else:
-    #        return pd.DataFrame()
 
     # Define the start and end date range
     start_date = datetime.strptime("2024-10-01 00:00", "%Y-%m-%d %H:%M")
@@ -213,27 +208,10 @@ if st.session_state['authentication_status']:
     # Fetch the Survey Respondent Data (24-hour interval)
     survey_respondent_data = fetch_survey_respondent_data(start_date, end_date)
 
-    # Fetch the Survey Answer Data (12-hour interval)
-    #survey_answer_data = fetch_survey_answer_data(start_date, end_date)
-
-    # Display the result in Streamlit
-    #with st.expander("Survey Respondent Data from API"):
-        #if not survey_respondent_data.empty:
-            #st.write("Survey Respondent Data from API:")
-            #st.dataframe(survey_respondent_data)
-        #else:
-            #st.write("No Survey Respondent Data available for the specified range.")
-
-    #if not survey_answer_data.empty:
-    #    st.write("Survey Answer Data fetched successfully:")
-    #    st.dataframe(survey_answer_data)
-    #else:
-    #    st.write("No Survey Answer Data available for the specified range.")
-
     # CONNECT SHEET SAP SECTION
 
     # Fetch data
-    @st.cache_data()
+    @st.cache_data(ttl=86400)
     def fetch_data_sap():
         secret_info = st.secrets["sheets"]
         scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
@@ -263,7 +241,7 @@ if st.session_state['authentication_status']:
 
     # Display df_merged
     #with st.expander('Survey Respondent & SAP Sheet Merged'):
-        #st.dataframe(df_merged)
+    #    st.dataframe(df_merged)
 
     # CONCISE DATAFRAME SECTION
 
@@ -275,6 +253,7 @@ if st.session_state['authentication_status']:
         'subunit' : df_merged['subunit'],
         'division': df_merged['division'].combine_first(df_merged['div_name']),
         'department': df_merged['department'].combine_first(df_merged['dept_name']),
+        'postion': df_merged['position'].combine_first(df_merged['position_name']),
         'status_survey': df_merged['_merge'].apply(lambda x: 'done' if x in ['left_only', 'both'] else 'not done'),
         'admin_goman': df_merged.apply(lambda row: row['admin_goman'] if pd.notna(row['admin_goman']) else '-', axis=1)
     })
@@ -293,12 +272,6 @@ if st.session_state['authentication_status']:
     # Convert the values to uppercase and remove spaces before and after
     df_concise['division'] = df_concise['division'].str.upper().str.strip()
     df_concise['department'] = df_concise['department'].str.upper().str.strip()
-
-
-
-    # Display the resulting DataFrame
-    #with st.expander('Survey Respondent & SAP Sheet Concised'):
-        #st.dataframe(df_concise)
 
     # FILTER SECTION
 
@@ -429,6 +402,11 @@ if st.session_state['authentication_status']:
     # final_counts
     with st.expander('Data Source'):
         st.write(final_counts)
+
+    # Display the resulting DataFrame
+    df_concise = df_concise.drop(columns=['admin_goman'])
+    with st.expander('Raw Data'):
+        st.dataframe(df_concise)
 
      # Logout button
     st.sidebar.markdown('### Options')
