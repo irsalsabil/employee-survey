@@ -405,7 +405,7 @@ if st.session_state['authentication_status']:
 
     # Display the resulting DataFrame
     df_concise = df_concise.drop(columns=['admin_goman'])
-    with st.expander('Raw Data'):
+    with st.expander('Raw Data (Gunakan filter di sidebar dan klik tombol download di kanan atas tabel data)'):
         st.dataframe(df_concise)
 
      # Logout button
