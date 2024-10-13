@@ -239,9 +239,11 @@ if st.session_state['authentication_status']:
     # Now perform the merge
     df_merged = pd.merge(survey_respondent_data, df_sap, left_on='nik', right_on='nik_short', how='outer', indicator=True)
 
+    # Convert submitted_on as datetime
+    df_merged['submitted_on'] = pd.to_datetime(df_merged['submitted_on'], errors='coerce')
+
     # Display df_merged
     #with st.expander('Survey Respondent & SAP Sheet Merged'):
-    #    st.dataframe(df_merged)
 
     # CONCISE DATAFRAME SECTION
 
@@ -255,8 +257,12 @@ if st.session_state['authentication_status']:
         'department': df_merged['department'].combine_first(df_merged['dept_name']),
         'postion': df_merged['position'].combine_first(df_merged['position_name']),
         'status_survey': df_merged['_merge'].apply(lambda x: 'done' if x in ['left_only', 'both'] else 'not done'),
-        'admin_goman': df_merged.apply(lambda row: row['admin_goman'] if pd.notna(row['admin_goman']) else '-', axis=1)
+        'admin_goman': df_merged.apply(lambda row: row['admin_goman'] if pd.notna(row['admin_goman']) else '-', axis=1),
+        'submitted_on':df_merged['submitted_on'].dt.date
     })
+
+    # Drop rows where the unit is 'KOMPAS GRAMEDIA'
+    df_concise = df_concise.loc[df_concise['unit'] != 'KOMPAS GRAMEDIA'].reset_index(drop=True)
 
     # Replace 'Group of' with 'G.' and 'Corporate' with 'C.' in the 'unit' column
     df_concise['unit'] = df_concise['unit'].str.upper().replace({
@@ -272,6 +278,10 @@ if st.session_state['authentication_status']:
     # Convert the values to uppercase and remove spaces before and after
     df_concise['division'] = df_concise['division'].str.upper().str.strip()
     df_concise['department'] = df_concise['department'].str.upper().str.strip()
+
+    #Display df_concise
+    #with st.expander('df_concise'):
+    #    st.dataframe(df_concise)
 
     # FILTER SECTION
 
@@ -397,16 +407,78 @@ if st.session_state['authentication_status']:
     )
 
     # Display the chart using Streamlit
-    st.altair_chart(participation_chart, use_container_width=True)
+    #st.altair_chart(participation_chart, use_container_width=True)
+
+    # Get the current date and calculate the target percentage based on the week
+    current_date = datetime.now()
+    start_percentage = 30  # Starting percentage on current date
+
+    # Define the dates and the corresponding percentage increments
+    increments = {
+        datetime(2024, 10, 21): 40,
+        datetime(2024, 10, 28): 50
+    }
+
+    # Dynamically determine the current percentage based on the date
+    for target_date, percentage in increments.items():
+        if current_date >= target_date:
+            start_percentage = percentage
+
+    # Create a dynamic vertical line (using `mark_rule`)
+    vertical_line = alt.Chart(pd.DataFrame({'line': [start_percentage]})).mark_rule(color='red').encode(
+        x='line:Q'
+    )
+
+    # Add a label next to the vertical line (using `mark_text`)
+    vertical_line_label = alt.Chart(pd.DataFrame({'line': [start_percentage]})).mark_text(
+        text='Target', align='left', dx=3, dy=-10, color='red', fontSize=12
+    ).encode(
+        x='line:Q',
+        y=alt.value(10)  # Adjust the position on the Y-axis
+    )
+
+    # Combine the bar chart with the vertical line
+    final_chart = participation_chart + vertical_line + vertical_line_label
+
+    # Display the chart using Streamlit
+    st.altair_chart(final_chart, use_container_width=True)
+
+    # Add 'Achievement' column based on whether 'Done (%)' reaches the target
+    final_counts['Target'] = final_counts['Done (%)'].apply(lambda x: 'Achieved' if x >= start_percentage else 'Not Achieved')
 
     # final_counts
     with st.expander('Data Source'):
         st.write(final_counts)
 
     # Display the resulting DataFrame
-    df_concise = df_concise.drop(columns=['admin_goman'])
+    df_concise2 = df_concise.drop(columns=['admin_goman'])
     with st.expander('Raw Data (Gunakan filter di sidebar dan klik tombol download di kanan atas tabel data)'):
-        st.dataframe(df_concise)
+        st.dataframe(df_concise2)
+
+    # DAILY PROGRESS SECTION
+
+    # Count rows for each date, keep None values
+    count_by_date = df_concise.groupby('submitted_on').size().reset_index(name='count')
+    
+    # Remove rows with None dates for charting purposes
+    count_by_date = count_by_date.dropna()
+
+    # Create Altair chart
+    progress_chart = alt.Chart(count_by_date).mark_line(point=True).encode(
+        x=alt.X('submitted_on:T', title='Date', axis=alt.Axis(format='%d')),
+        y=alt.Y('count:Q', title='Count'),
+        tooltip=['submitted_on', 'count']
+     )
+
+    # Display the calculated percentage as a bar chart
+    st.header(f'Daily Progress', divider='rainbow')
+
+    # Display the chart using Streamlit
+    st.altair_chart(progress_chart, use_container_width=True)
+
+    # Display count_by_date
+    with st.expander('Data Source 2'):
+        st.dataframe(count_by_date)
 
      # Logout button
     st.sidebar.markdown('### Options')
