@@ -244,6 +244,7 @@ if st.session_state['authentication_status']:
 
     # Display df_merged
     #with st.expander('Survey Respondent & SAP Sheet Merged'):
+        #st.dataframe(df_merged)
 
     # CONCISE DATAFRAME SECTION
 
@@ -252,7 +253,7 @@ if st.session_state['authentication_status']:
         'nik': df_merged['nik_short'].combine_first(df_merged['nik_x']),
         'name' : df_merged['name_sap'].combine_first(df_merged['name']),
         'unit': df_merged['unit_long'].combine_first(df_merged['unit_name']),
-        'subunit' : df_merged['subunit'],
+        'subunit' : df_merged['subunit'].combine_first(df_merged['unit_name']),  # Fill empty subunit with unit
         'division': df_merged['division'].combine_first(df_merged['div_name']),
         'department': df_merged['department'].combine_first(df_merged['dept_name']),
         'postion': df_merged['position'].combine_first(df_merged['position_name']),
