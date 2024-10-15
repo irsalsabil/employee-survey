@@ -256,7 +256,7 @@ if st.session_state['authentication_status']:
         'subunit' : df_merged['subunit'].combine_first(df_merged['unit_name']),  # Fill empty subunit with unit
         'division': df_merged['division'].combine_first(df_merged['div_name']),
         'department': df_merged['department'].combine_first(df_merged['dept_name']),
-        'postion': df_merged['position'].combine_first(df_merged['position_name']),
+        'position': df_merged['position'].combine_first(df_merged['position_name']),
         'status_survey': df_merged['_merge'].apply(lambda x: 'done' if x in ['left_only', 'both'] else 'not done'),
         'admin_goman': df_merged.apply(lambda row: row['admin_goman'] if pd.notna(row['admin_goman']) else '-', axis=1),
         'submitted_on':df_merged['submitted_on'].dt.date
@@ -264,6 +264,9 @@ if st.session_state['authentication_status']:
 
     # Drop rows where the unit is 'KOMPAS GRAMEDIA'
     df_concise = df_concise.loc[df_concise['unit'] != 'KOMPAS GRAMEDIA'].reset_index(drop=True)
+
+    # Drop rows where the position is 'Store Apprentice'
+    df_concise = df_concise.loc[df_concise['position'] != 'Store Apprentice'].reset_index(drop=True)
 
     # Replace 'Group of' with 'G.' and 'Corporate' with 'C.' in the 'unit' column
     df_concise['unit'] = df_concise['unit'].str.upper().replace({
