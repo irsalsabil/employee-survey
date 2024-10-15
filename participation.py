@@ -419,8 +419,7 @@ if st.session_state['authentication_status']:
 
     # Define the dates and the corresponding percentage increments
     increments = {
-        datetime(2024, 10, 21): 40,
-        datetime(2024, 10, 28): 50
+        datetime(2024, 10, 15): 70
     }
 
     # Dynamically determine the current percentage based on the date
